@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block title %}Log In{% endblock %}
+{% block content %}
+<div class="container" style="background-color:#0fd9c8;max-width:600px; padding:10px;margin-top: 50px;">
+    <form class="row g-3" action="login" method="post">
+        {% csrf_token %}
+        <div class=>
+            <label for="validationDefaultUsername" class="form-label">Username</label>
+            <div class="input-group">
+                <span class="input-group-text" id="inputGroupPrepend2">@</span>
+                <input type="text" name="username" class="form-control" id="validationDefaultUsername"
+                       aria-describedby="inputGroupPrepend2" placeholder="Username" required>
+            </div>
+        </div>
+        <div>
+            <label for="validationDefault04" class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" id="validationDefault04" placeholder="Password" required>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit">Log in</button>
+
+        </div>
+    </form>
+</div>
+{% endblock %}

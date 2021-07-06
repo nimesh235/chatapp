@@ -1,0 +1,74 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %}
+{% block content %}
+{% load staticfiles %}
+<div class="container" style="margin-top: -15px;max-width:100%; background-color:#60b6f7;border: none !important; max-height:600px;">
+    <div class="row" style="margin-left: -25px;" >
+        <div class="col" style="max-width:30%; ">
+            <h2 align="center" style="background-color:#33daff; height: 45px;"> Chat</h2>
+            <div class="list-group" style="height:550px;background-color:#003cb3;overflow-y: scroll; margin: auto; margin-top: -10px;">
+                {% for user in users%}
+                {% if user.id == id %}
+                <a href="/home/{{user.id}}" class="list-group-item active" >{{user}}</a>
+                {% else %}
+                <a href="/home/{{user.id}}" class="list-group-item">{{user}}</a>
+                {% endif %}
+                {% endfor%}
+            </div>
+        </div>
+        <div class="col" style="height=550px;background-color:#0C5BFA">
+            <form id="chatform" style="margin-left: -10px; margin-right: -10px;">
+                {% csrf_token %}
+                <div style=" height: 45px; background-color: #33daff">
+                    <h2 align="center" >{{user}}</h2>
+                </div>
+                <div id="msg_from" hidden>{{cuser.id}}</div>
+
+                <div id="chat"
+                     style="background-color: #d3ede6;max-height=450px;height: 510px;overflow-y: auto;display:flex; flex-direction:column-reverse;">
+                    <div id="chatp">
+                    {% for data in datas %}
+
+                    <div class="chat">
+                        {% if data.msg_from == user %}
+                            {% if data.msg_to == cuser %}
+                            <div class="mess">
+                                <b>{{data.msg_from}}</b>
+                                <p>{{data.msg}}</p>
+                                <span class="time-right">{{data.formatted_time}}</span>
+                                <div class="sp"></div>
+                            </div>
+                            {% endif %}
+                        {% elif data.msg_from == cuser %}
+                            {% if data.msg_to == user %}
+                            <div class="sp"></div>
+                            <div class="mess darker">
+                            <!--                        <b id="msg_from">{{data.msg_from}}</b>-->
+                                <p>{{data.msg}}</p>
+                                <span class="time-right">{{data.formatted_time}}</span>
+                            </div>
+
+                            {% endif %}
+                         {% endif %}
+                    </div>
+                    {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <!--                <form action="/home/{{user.id}}/send/" method="post">-->
+
+                    <input name="msg" id="msg" style="width:80%; ">
+                    <button type="submit" id="go" style="width:19%; " >Send</button>
+
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+{% block afterbody %}
+<script type="text/javascript" src='{% static "jquery-1.12.1.min.js" %}'></script>
+<script type="text/javascript" src='{% static "reconnecting-websocket.js" %}'></script>
+<script type="text/javascript" src='{% static "chatting.js" %}'></script>
+{% endblock afterbody %}
