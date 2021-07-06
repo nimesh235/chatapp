@@ -1,44 +1,18 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout,user_logged_in
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import requires_csrf_token
+import pusher
 
 from .models import Massage
 
 
 # Create your views here.
-
-
-def index(request):
-    return render(request, "index.html")
-
-
-def base(request):
-    return render(request, "base.html", {'home': 'active'})
-
-
-def chat(request):
-    data = [["Nimesh", "hello everyone", "9:52"],
-            ["", "hello nims", "9:53"],
-            ["Nimesh", "How are you today?", "9:54"],
-            ["", "I'm fine. Thanks for asking!", "9:56"],
-            ["Nimesh", "hello everyone", "9:52"],
-            ["", "hello nims", "9:53"],
-            ["Nimesh", "How are you today?", "9:54"],
-            ["", "I'm fine. Thanks for asking!", "9:56"]
-            ]
-    return render(request, "chatroom.html", {'datas': data})
-
-
-def demo(request, slug):
-    print(slug)
-    return HttpResponse(Massage.objects.filter(time__gt='2021-03-04 14:00', msg_from_id=3))
-
 
 def loginpage(request):
     if request.method == "POST":
@@ -49,7 +23,7 @@ def loginpage(request):
         if user is not None:
             login(request, user)
             print(request.user)
-            return redirect("/home/New")
+            return redirect("/chat")
         else:
             print(request)
             # Return an 'invalid login' error message.
@@ -76,21 +50,21 @@ def signup(request):
 
 
 def logoutpage(request):
-    print(request)
     logout(request)
     return redirect("/login")
 
 
 @login_required(login_url='/login')
-def home(request, id, **kwargs):
-    # print(request.user, kwargs, id)
+def home(request, id="New", **kwargs):
+
+    print(id)
     users = User.objects.filter(~Q(id=request.user.id))
     if id != "New":
         msg_from = User.objects.filter(id=request.user.id)
         user = User.objects.get(id=id)
         # print(msg_from)
         m = Massage.objects.filter(
-            (Q(msg_from=msg_from[0]) | Q(msg_from=user)) & Q(msg_to=msg_from[0]) | Q(msg_to=user))
+            (Q(msg_from=msg_from[0]) & Q(msg_to=user)) | Q(msg_to=msg_from[0]) & Q(msg_from=user))
 
         return render(request, "home.html",
                       {"home": "active", "users": users, "id": int(id), "user": user, "datas": m,"cuser":request.user})
@@ -108,7 +82,3 @@ def send(request, slug):
 
     return redirect(f'/home/{slug}/')
 
-
-@receiver(post_save, sender=Massage)
-def handel(sender,**kwargs):
-    return redirect(f'/logout')

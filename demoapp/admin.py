@@ -5,7 +5,7 @@ from .models import Massage
 
 # @admin.register(massage)
 class MassageAdmin(admin.ModelAdmin):
-    list_display = ('msg', 'msg_from', 'msg_to', 'time')
+    list_display = ('msg', 'msg_from', 'msg_to','status', 'time')
     # pass
 
 admin.site.register(Massage, MassageAdmin)

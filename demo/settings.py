@@ -28,13 +28,12 @@ SECRET_KEY = 'kj%fd)82is9-z75*827w+a#38vz5fx-gh9$eqb338kc088l%9%'
 DEBUG = True
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,11 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'demoapp.apps.DemoappConfig',
-    'channels',
+    # 'channels',
     'demo',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,6 +55,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+SESSION_COOKIE_AGE = 3000
 
 ROOT_URLCONF = 'demo.urls'
 
@@ -77,7 +77,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'demo.wsgi.application'
 
-ASGI_APPLICATION = "demoapp.asgi.application"
+# ASGI_APPLICATION = "demoapp.asgi.application"
 
 
 # Database
@@ -85,8 +85,11 @@ ASGI_APPLICATION = "demoapp.asgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'nimessh235$chat',
+        'USER': 'nimessh235',
+        'PASSWORD': 'SN9ZszHNGzji4q@',
+        'HOST': 'nimessh235.mysql.pythonanywhere-services.com'
     }
 }
 
@@ -122,7 +125,7 @@ USE_I18N = True
 USE_L10N = False
 
 USE_TZ = False
-
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
@@ -135,40 +138,3 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-# print(STATIC_ROOT,STATIC_URL,STATICFILES_DIRS)
-# Channel settings
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        },
-        "ROUTING": "demoapp.routing.channel_routing",
-    },
-}
-
-# Logging
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'propagate': True,
-            'level': 'INFO'
-        },
-        'chat': {
-            'handlers': ['console'],
-            'propagate': False,
-            'level': 'DEBUG',
-        },
-    },
-}
-DJANGO_NOTIFICATIONS_CONFIG = {
-    'USE_JSONFIELD': True
-}
