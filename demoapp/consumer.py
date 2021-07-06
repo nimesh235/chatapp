@@ -11,10 +11,10 @@ import pusher
 from .models import Massage
 
 pusher_client = pusher.Pusher(
-        app_id='1222631',
-        key='fe20237c51fe22bd59b7',
-        secret='981bb19f89a28fc0e80a',
-        cluster='ap2',
+        app_id='your app_id',
+        key='your_key',
+        secret='your_secret',
+        cluster='your_cluster',
         ssl=True
     )
 def demo(request):
